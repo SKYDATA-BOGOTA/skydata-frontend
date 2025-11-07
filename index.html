@@ -1,41 +1,80 @@
 <!DOCTYPE html>
+<!-- 
+  SKYDATA Bogotá - Sistema de Visualización de Información Ambiental
+  
+  Trazabilidad:
+  - SwR-I01: Interfaz Web Responsiva
+  - SwR-U01: Interfaz Intuitiva
+  - ISO/IEC 25010:2011: Usability
+  - ISO/IEC 12207:2017: Implementation Process
+-->
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Visualización de Información Ambiental para Bogotá - Proyecto Académico Universidad Distrital">
+    <meta name="keywords" content="SKYDATA, Bogotá, monitoreo ambiental, calidad aire, temperatura, ISO 29148, ISO 12207">
+    <meta name="author" content="Edgar Andrade, Giancarlo Prieto">
+    
     <title>SKYDATA Bogotá - Sistema de Monitoreo Ambiental</title>
     
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet CSS - SwR-F01: Renderizado de Mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
+          crossorigin=""/>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/map.css">
 </head>
 <body>
+    <!-- SwR-U01: Header con información clara -->
     <header>
-        <h1>SKYDATA Bogotá</h1>
+        <h1>🌤️ SKYDATA Bogotá</h1>
         <p>Sistema de Visualización de Información Ambiental</p>
     </header>
 
+    <!-- SwR-U02: Loading Indicator (Feedback Visual) -->
+    <div id="loading-indicator">
+        <p>Cargando...</p>
+    </div>
+
+    <!-- SwR-U02: Error Message (Feedback Visual) -->
+    <div id="error-message"></div>
+
+    <!-- SwR-F01, SwR-F02, SwR-F03: Main Content -->
     <main>
+        <!-- SwR-F01: Map Container -->
         <div id="map-container">
             <div id="map"></div>
         </div>
+        
+        <!-- SwR-F03: Info Panel (initially hidden) -->
         <div id="info-panel" class="info-panel hidden">
-            <h2>Información de la Estación</h2>
-            <div id="info-content"></div>
+            <h2>📍 Información de la Estación</h2>
+            <div id="info-content">
+                <p style="color: #6b7280; text-align: center; padding: 2rem;">
+                    Seleccione un marcador en el mapa para ver la información detallada de la estación.
+                </p>
+            </div>
         </div>
     </main>
 
     <footer>
-        <p>Proyecto Académico - Universidad Distrital | ISO/IEC 12207:2017, ISO/IEC/IEEE 29148:2018</p>
+        <p>
+            Proyecto Académico - Universidad Distrital Francisco José de Caldas | 
+            <strong>Cumplimiento Normativo:</strong> 
+            <a href="https://github.com/SKYDATA-BOGOTA/skydata-frontend" target="_blank">ISO/IEC 12207:2017</a>, 
+            <a href="https://github.com/SKYDATA-BOGOTA/skydata-backend" target="_blank">ISO/IEC/IEEE 29148:2018</a>
+        </p>
     </footer>
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet JS - SwR-F01 -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
     
-    <!-- App JS (Modules) -->
+    <!-- App JS Modules - SwR-DC01: JavaScript ES6+ -->
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
