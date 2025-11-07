@@ -1,0 +1,8 @@
+# Controllers
+
+Esta carpeta contendrá los controladores de la aplicación.
+
+Trazabilidad:
+- SwR-F01: Renderizado de Mapa Base
+- SwR-F02: Marcadores en el Mapa
+- CU-01: Consultar Información Ambiental

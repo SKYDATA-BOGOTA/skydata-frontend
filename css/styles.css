@@ -1,0 +1,62 @@
+/* SKYDATA Frontend - Estilos Principales
+ * Trazabilidad:
+ * - SwR-I01: Interfaz Web Responsiva
+ * - SwR-U01: Usabilidad e Interfaz Intuitiva
+ * - ISO/IEC 25010:2011: Usability
+ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+main {
+    display: flex;
+    height: calc(100vh - 180px);
+}
+
+#map-container {
+    flex: 1;
+    position: relative;
+}
+
+.info-panel {
+    width: 350px;
+    background: white;
+    padding: 1.5rem;
+    overflow-y: auto;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.info-panel.hidden {
+    transform: translateX(100%);
+}
+
+footer {
+    background: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+}

@@ -1,0 +1,23 @@
+/* SKYDATA Frontend - Estilos del Mapa
+ * Trazabilidad:
+ * - SwR-F01: Renderizado de Mapa Base
+ * - SwR-F02: Marcadores en el Mapa
+ */
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.leaflet-popup-content {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.marker-cluster {
+    background-color: rgba(102, 126, 234, 0.6);
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}

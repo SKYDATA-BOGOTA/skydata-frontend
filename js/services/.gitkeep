@@ -1,0 +1,8 @@
+# Services
+
+Esta carpeta contendrá los servicios de la aplicación.
+
+Trazabilidad:
+- SwR-F07: Solicitud de Datos al Backend
+- SwR-I02: Cliente HTTP en Frontend
+- CU-03: Acceder a Datos mediante Servicio

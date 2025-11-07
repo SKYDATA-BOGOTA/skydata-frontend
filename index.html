@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SKYDATA Bogotá - Sistema de Monitoreo Ambiental</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/map.css">
+</head>
+<body>
+    <header>
+        <h1>SKYDATA Bogotá</h1>
+        <p>Sistema de Visualización de Información Ambiental</p>
+    </header>
+
+    <main>
+        <div id="map-container">
+            <div id="map"></div>
+        </div>
+        <div id="info-panel" class="info-panel hidden">
+            <h2>Información de la Estación</h2>
+            <div id="info-content"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Proyecto Académico - Universidad Distrital | ISO/IEC 12207:2017, ISO/IEC/IEEE 29148:2018</p>
+    </footer>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- App JS (Modules) -->
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>
