@@ -11,7 +11,7 @@ class DataService {
       }
       const data = await response.json();
       if (!data || data.type !== 'FeatureCollection') {
-        throw new Error('GeoJSON inválido');
+        throw new Error('GeoJSON inválido recibido del servidor');
       }
       return data;
     } catch (error) {
