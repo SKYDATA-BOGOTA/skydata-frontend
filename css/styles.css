@@ -1,16 +1,39 @@
-/* SwR-U01, SwR-U02: Usabilidad */
+/* 
+ * SKYDATA Frontend - Estilos Principales
+ * Branch: feature/SwR-U01-U02-ui-ux-styles
+ * 
+ * Trazabilidad:
+ * - SwR-U01: Usabilidad e Interfaz Intuitiva
+ * - SwR-U02: Retroalimentación Visual
+ * - ISO/IEC 25010:2011: Usability
+ */
+
+/* ════════════════════════════════════════════════════════════════
+   VARIABLES CSS
+   ════════════════════════════════════════════════════════════════ */
 :root {
   --primary-color: #667eea;
   --text-primary: #1f2937;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+/* ════════════════════════════════════════════════════════════════
+   RESET Y BASE
+   ════════════════════════════════════════════════════════════════ */
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
+}
 
 body {
   font-family: 'Segoe UI', sans-serif;
   color: var(--text-primary);
+  background-color: #f9fafb;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   HEADER - SwR-U01: Interfaz Intuitiva
+   ════════════════════════════════════════════════════════════════ */
 header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
@@ -18,23 +41,58 @@ header {
   text-align: center;
 }
 
-main { display: flex; height: calc(100vh - 140px); }
+header h1 {
+  margin-bottom: 0.5rem;
+}
 
-#map-container { flex: 1; }
+header p {
+  opacity: 0.95;
+}
 
+/* ════════════════════════════════════════════════════════════════
+   MAIN LAYOUT
+   ════════════════════════════════════════════════════════════════ */
+main { 
+  display: flex; 
+  height: calc(100vh - 140px); 
+}
+
+#map-container { 
+  flex: 1; 
+}
+
+/* ════════════════════════════════════════════════════════════════
+   INFO PANEL - SwR-F03: Visualización de Información Detallada
+   ════════════════════════════════════════════════════════════════ */
 .info-panel {
   width: 380px;
   background: white;
   padding: 1.5rem;
   transition: transform 0.3s;
+  overflow-y: auto;
 }
 
-.info-panel.hidden { transform: translateX(100%); }
+.info-panel.hidden { 
+  transform: translateX(100%); 
+}
 
+.info-panel h2 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+#info-content {
+  color: var(--text-primary);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   VARIABLES GRID - SwR-F04: Formato de Presentación de Datos
+   ════════════════════════════════════════════════════════════════ */
 .variables-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
+  margin: 1rem 0;
 }
 
 .variable-card {
@@ -43,6 +101,9 @@ main { display: flex; height: calc(100vh - 140px); }
   border-radius: 8px;
 }
 
+/* ════════════════════════════════════════════════════════════════
+   LOADING & ERROR - SwR-U02: Retroalimentación Visual
+   ════════════════════════════════════════════════════════════════ */
 #loading-indicator {
   position: fixed;
   top: 50%;
@@ -52,6 +113,8 @@ main { display: flex; height: calc(100vh - 140px); }
   padding: 2rem;
   border-radius: 12px;
   display: none;
+  z-index: 10000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #error-message {
@@ -64,4 +127,26 @@ main { display: flex; height: calc(100vh - 140px); }
   padding: 1rem 2rem;
   border-radius: 8px;
   display: none;
+  z-index: 10000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════════════ */
+footer {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.85rem;
+}
+
+footer a {
+  color: #f093fb;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
 }
