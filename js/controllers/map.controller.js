@@ -10,7 +10,6 @@
  * SwR-F01, SwR-F02: Mapa y Marcadores
  */
 import { CONFIG } from '../config/config.js';
-import { showLocationInfo } from './info.controller.js';
 
 /**
  * Clase que controla la funcionalidad del mapa y sus marcadores
@@ -49,7 +48,6 @@ class MapController {
         const coords = feature.geometry.coordinates;
         const latLng = [coords[1], coords[0]];
         const marker = L.marker(latLng);
-        marker.on('click', () => showLocationInfo(feature));
         if (feature.properties && feature.properties.estacion) {
           marker.bindPopup(`<b>${feature.properties.estacion}</b>`);
         }
