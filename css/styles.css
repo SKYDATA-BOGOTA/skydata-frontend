@@ -1,250 +1,120 @@
-/* SKYDATA Frontend - Estilos Principales
+/* 
+ * SKYDATA Frontend - Estilos Principales
+ * Branch: feature/SwR-U01-U02-ui-ux-styles
+ * 
  * Trazabilidad:
- * - SwR-I01: Interfaz Web Responsiva
  * - SwR-U01: Usabilidad e Interfaz Intuitiva
  * - SwR-U02: Retroalimentación Visual
  * - ISO/IEC 25010:2011: Usability
- * - WCAG 2.1: Accessibility (contrast ratios, font sizes)
  */
 
+/* ════════════════════════════════════════════════════════════════
+   VARIABLES CSS
+   ════════════════════════════════════════════════════════════════ */
 :root {
-  /* Colores principales */
   --primary-color: #667eea;
-  --primary-dark: #5568d3;
-  --secondary-color: #764ba2;
-  --accent-color: #f093fb;
-  
-  /* Colores de estado */
-  --success-color: #10b981;
-  --warning-color: #f59e0b;
-  --error-color: #ef4444;
-  --info-color: #3b82f6;
-  
-  /* Colores de fondo */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9fafb;
-  --bg-dark: #2c3e50;
-  --bg-card: #ffffff;
-  
-  /* Colores de texto */
   --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --text-light: #ffffff;
-  
-  /* Sombras */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  
-  /* Espaciado */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  
-  /* Transiciones */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ════════════════════════════════════════════════════════════════
+   RESET Y BASE
+   ════════════════════════════════════════════════════════════════ */
+* { 
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box; 
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  line-height: 1.6;
+  font-family: 'Segoe UI', sans-serif;
   color: var(--text-primary);
-  background-color: var(--bg-secondary);
+  background-color: #f9fafb;
 }
 
 /* ════════════════════════════════════════════════════════════════
    HEADER - SwR-U01: Interfaz Intuitiva
    ════════════════════════════════════════════════════════════════ */
-
 header {
-  background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: var(--text-light);
-  padding: var(--spacing-lg) var(--spacing-xl);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
   text-align: center;
-  box-shadow: var(--shadow-md);
-  position: relative;
-  z-index: 1000;
 }
 
 header h1 {
-  font-size: 2rem;
-  margin-bottom: var(--spacing-sm);
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
 }
 
 header p {
-  font-size: 1rem;
   opacity: 0.95;
-  font-weight: 300;
 }
 
 /* ════════════════════════════════════════════════════════════════
-   MAIN LAYOUT - SwR-I01: Interfaz Web Responsiva
+   MAIN LAYOUT
    ════════════════════════════════════════════════════════════════ */
-
-main {
-  display: flex;
-  height: calc(100vh - 140px);
-  position: relative;
+main { 
+  display: flex; 
+  height: calc(100vh - 140px); 
 }
 
-#map-container {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
+#map-container { 
+  flex: 1; 
 }
 
 /* ════════════════════════════════════════════════════════════════
    INFO PANEL - SwR-F03: Visualización de Información Detallada
    ════════════════════════════════════════════════════════════════ */
-
 .info-panel {
   width: 380px;
-  background: var(--bg-card);
-  padding: var(--spacing-xl);
+  background: white;
+  padding: 1.5rem;
+  transition: transform 0.3s;
   overflow-y: auto;
-  box-shadow: var(--shadow-lg);
-  transition: transform var(--transition-normal);
-  position: relative;
-  z-index: 999;
 }
 
-.info-panel.hidden {
-  transform: translateX(100%);
+.info-panel.hidden { 
+  transform: translateX(100%); 
 }
 
 .info-panel h2 {
+  margin-bottom: 1rem;
   color: var(--primary-color);
-  margin-bottom: var(--spacing-lg);
-  font-size: 1.5rem;
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: var(--spacing-sm);
+}
+
+#info-content {
+  color: var(--text-primary);
 }
 
 /* ════════════════════════════════════════════════════════════════
-   STATION INFO - SwR-F04: Formato de Presentación de Datos
+   VARIABLES GRID - SwR-F04: Formato de Presentación de Datos
    ════════════════════════════════════════════════════════════════ */
-
-.station-info h3 {
-  color: var(--text-primary);
-  font-size: 1.25rem;
-  margin-bottom: var(--spacing-sm);
-}
-
-.localidad {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-  margin-bottom: var(--spacing-md);
-}
-
-.descripcion {
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  margin-bottom: var(--spacing-lg);
-  font-style: italic;
-}
-
 .variables-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: var(--spacing-md);
-  margin: var(--spacing-lg) 0;
+  gap: 1rem;
+  margin: 1rem 0;
 }
 
-/* SwR-F04: Cards de variables ambientales */
 .variable-card {
-  background: var(--bg-secondary);
+  padding: 1rem;
+  background: #f9fafb;
   border-radius: 8px;
-  padding: var(--spacing-md);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-  border-left: 4px solid var(--primary-color);
-}
-
-.variable-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.variable-card.temperature { border-left-color: #ef4444; }
-.variable-card.humidity { border-left-color: #3b82f6; }
-.variable-card.air-quality { border-left-color: #10b981; }
-.variable-card.noise { border-left-color: #f59e0b; }
-
-.variable-icon {
-  font-size: 1.5rem;
-  display: block;
-  margin-bottom: var(--spacing-xs);
-}
-
-.variable-label {
-  display: block;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: var(--spacing-xs);
-}
-
-.variable-value {
-  display: block;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.timestamp {
-  margin-top: var(--spacing-lg);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--bg-secondary);
-  font-size: 0.85rem;
-  color: var(--text-secondary);
 }
 
 /* ════════════════════════════════════════════════════════════════
    LOADING & ERROR - SwR-U02: Retroalimentación Visual
    ════════════════════════════════════════════════════════════════ */
-
 #loading-indicator {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.95);
-  padding: var(--spacing-xl);
+  background: white;
+  padding: 2rem;
   border-radius: 12px;
-  box-shadow: var(--shadow-lg);
-  z-index: 10000;
   display: none;
-  text-align: center;
-  min-width: 250px;
-}
-
-#loading-indicator::before {
-  content: '';
-  display: inline-block;
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--bg-secondary);
-  border-top-color: var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: var(--spacing-md);
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
+  z-index: 10000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #error-message {
@@ -252,76 +122,31 @@ main {
   top: 80px;
   left: 50%;
   transform: translateX(-50%);
-  background: var(--error-color);
+  background: #ef4444;
   color: white;
-  padding: var(--spacing-md) var(--spacing-xl);
+  padding: 1rem 2rem;
   border-radius: 8px;
-  box-shadow: var(--shadow-lg);
-  z-index: 10000;
   display: none;
-  max-width: 500px;
-  text-align: center;
-  animation: slideDown var(--transition-normal);
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
+  z-index: 10000;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* ════════════════════════════════════════════════════════════════
    FOOTER
    ════════════════════════════════════════════════════════════════ */
-
 footer {
-  background: var(--bg-dark);
-  color: var(--text-light);
+  background: #2c3e50;
+  color: white;
   text-align: center;
-  padding: var(--spacing-md);
+  padding: 1rem;
   font-size: 0.85rem;
-  box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
 }
 
 footer a {
-  color: var(--accent-color);
+  color: #f093fb;
   text-decoration: none;
-  transition: opacity var(--transition-fast);
 }
 
 footer a:hover {
-  opacity: 0.8;
   text-decoration: underline;
-}
-
-/* ════════════════════════════════════════════════════════════════
-   RESPONSIVE DESIGN - SwR-I01: Interfaz Web Responsiva
-   ════════════════════════════════════════════════════════════════ */
-
-@media (max-width: 768px) {
-  main {
-    flex-direction: column;
-  }
-  
-  .info-panel {
-    width: 100%;
-    max-height: 40vh;
-  }
-  
-  .info-panel.hidden {
-    transform: translateY(100%);
-  }
-  
-  .variables-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  header h1 {
-    font-size: 1.5rem;
-  }
 }
