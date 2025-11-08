@@ -1,11 +1,22 @@
-// SwR-F01: Renderizado de Mapa Base
+/**
+ * Controlador para la gestión del mapa y marcadores
+ * 
+ * Este módulo se encarga de:
+ * - Inicializar el mapa usando Leaflet
+ * - Renderizar marcadores desde datos GeoJSON
+ * - Gestionar la interacción con los marcadores (clicks, popups)
+ * - Limpiar marcadores del mapa
+ * 
+ * SwR-F01, SwR-F02: Mapa y Marcadores
+ */
 import { CONFIG } from '../config/config.js';
 
 /**
  * @class MapController
  * @description Controlador principal para la gestión del mapa interactivo.
- * Maneja la inicialización del mapa utilizando Leaflet y gestiona los marcadores
- * que se añaden a la visualización geográfica.
+ * Maneja la inicialización del mapa utilizando Leaflet, gestiona los marcadores
+ * que se añaden a la visualización geográfica, y proporciona métodos para
+ * renderizar datos GeoJSON y limpiar el mapa.
  * 
  * @author SkyData Team
  * @since 1.0.0
@@ -56,10 +67,76 @@ class MapController {
       minZoom: 10  // Nivel mínimo de zoom permitido
     }).addTo(this.map);
     
-    // Log de confirmación de inicialización exitosa
-    console.info('✓ Mapa inicializado');
-    
     return this.map;
+  }
+
+  /**
+   * @method renderMarkers
+   * @description Renderiza marcadores en el mapa a partir de datos en formato GeoJSON.
+   * Limpia los marcadores existentes antes de agregar nuevos. Solo procesa características
+   * de tipo 'Point' del GeoJSON.
+   * 
+   * @param {Object} geoJsonData - Objeto GeoJSON con las características a mostrar
+   * @param {Array} geoJsonData.features - Array de características GeoJSON
+   * @returns {Array<L.Marker>} Array de marcadores de Leaflet creados y añadidos al mapa
+   * 
+   * @example
+   * const geoData = {
+   *   type: "FeatureCollection",
+   *   features: [{
+   *     type: "Feature",
+   *     geometry: { type: "Point", coordinates: [-74.0721, 4.7110] },
+   *     properties: { estacion: "Estación Central" }
+   *   }]
+   * };
+   * mapController.renderMarkers(geoData);
+   */
+  renderMarkers(geoJsonData) {
+    // Limpia marcadores previos antes de añadir nuevos
+    this.clearMarkers();
+    
+    // Validación de datos de entrada
+    if (!geoJsonData || !geoJsonData.features) return [];
+    
+    // Itera sobre cada característica del GeoJSON
+    geoJsonData.features.forEach((feature) => {
+      // Solo procesa puntos geográficos
+      if (feature.geometry && feature.geometry.type === 'Point') {
+        const coords = feature.geometry.coordinates;
+        // GeoJSON usa [lng, lat], Leaflet usa [lat, lng]
+        const latLng = [coords[1], coords[0]];
+        
+        // Crea el marcador en las coordenadas especificadas
+        const marker = L.marker(latLng);
+        
+        // Añade popup con el nombre de la estación si está disponible
+        if (feature.properties && feature.properties.estacion) {
+          marker.bindPopup(`<b>${feature.properties.estacion}</b>`);
+        }
+        
+        // Añade el marcador al mapa y lo guarda en el array
+        marker.addTo(this.map);
+        this.markers.push(marker);
+      }
+    });
+    
+    return this.markers;
+  }
+
+  /**
+   * @method clearMarkers
+   * @description Elimina todos los marcadores actualmente visibles del mapa
+   * y limpia el array de marcadores. Útil para refrescar los datos mostrados.
+   * 
+   * @example
+   * mapController.clearMarkers();
+   * // Todos los marcadores han sido removidos del mapa
+   */
+  clearMarkers() {
+    // Remueve cada marcador del mapa
+    this.markers.forEach(marker => marker.remove());
+    // Limpia el array de referencias
+    this.markers = [];
   }
 }
 
