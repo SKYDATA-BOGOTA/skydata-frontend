@@ -1,0 +1,148 @@
+{
+  "archivos": [
+    {
+      "nombre": "config.js",
+      "ruta": "C:\\Users\\Administrador\\Documents\\ing sw 2\\repos\\skydata-frontend\\js\\config\\config.js",
+      "funciones": [],
+      "totalFunciones": 0,
+      "funcionesConTrazabilidad": 0,
+      "funcionesSinTrazabilidad": []
+    },
+    {
+      "nombre": "info.controller.js",
+      "ruta": "C:\\Users\\Administrador\\Documents\\ing sw 2\\repos\\skydata-frontend\\js\\controllers\\info.controller.js",
+      "funciones": [
+        {
+          "nombre": "showLocationInfo",
+          "linea": 2,
+          "tieneTrazabilidad": true,
+          "archivo": "info.controller.js"
+        },
+        {
+          "nombre": "showLoading",
+          "linea": 40,
+          "tieneTrazabilidad": true,
+          "archivo": "info.controller.js"
+        },
+        {
+          "nombre": "hideLoading",
+          "linea": 49,
+          "tieneTrazabilidad": true,
+          "archivo": "info.controller.js"
+        },
+        {
+          "nombre": "showError",
+          "linea": 58,
+          "tieneTrazabilidad": true,
+          "archivo": "info.controller.js"
+        }
+      ],
+      "totalFunciones": 4,
+      "funcionesConTrazabilidad": 4,
+      "funcionesSinTrazabilidad": []
+    },
+    {
+      "nombre": "map.controller.js",
+      "ruta": "C:\\Users\\Administrador\\Documents\\ing sw 2\\repos\\skydata-frontend\\js\\controllers\\map.controller.js",
+      "funciones": [
+        {
+          "nombre": "MapController",
+          "linea": 15,
+          "tieneTrazabilidad": true,
+          "archivo": "map.controller.js"
+        },
+        {
+          "nombre": "MapController",
+          "linea": 24,
+          "tieneTrazabilidad": false,
+          "archivo": "map.controller.js"
+        },
+        {
+          "nombre": "mapController",
+          "linea": 156,
+          "tieneTrazabilidad": false,
+          "archivo": "map.controller.js"
+        }
+      ],
+      "totalFunciones": 3,
+      "funcionesConTrazabilidad": 1,
+      "funcionesSinTrazabilidad": [
+        {
+          "nombre": "MapController",
+          "linea": 24,
+          "tieneTrazabilidad": false,
+          "archivo": "map.controller.js"
+        },
+        {
+          "nombre": "mapController",
+          "linea": 156,
+          "tieneTrazabilidad": false,
+          "archivo": "map.controller.js"
+        }
+      ]
+    },
+    {
+      "nombre": "main.js",
+      "ruta": "C:\\Users\\Administrador\\Documents\\ing sw 2\\repos\\skydata-frontend\\js\\main.js",
+      "funciones": [
+        {
+          "nombre": "initApp",
+          "linea": 17,
+          "tieneTrazabilidad": true,
+          "archivo": "main.js"
+        }
+      ],
+      "totalFunciones": 1,
+      "funcionesConTrazabilidad": 1,
+      "funcionesSinTrazabilidad": []
+    },
+    {
+      "nombre": "data.service.js",
+      "ruta": "C:\\Users\\Administrador\\Documents\\ing sw 2\\repos\\skydata-frontend\\js\\services\\data.service.js",
+      "funciones": [
+        {
+          "nombre": "DataService",
+          "linea": 4,
+          "tieneTrazabilidad": true,
+          "archivo": "data.service.js"
+        },
+        {
+          "nombre": "dataService",
+          "linea": 26,
+          "tieneTrazabilidad": false,
+          "archivo": "data.service.js"
+        }
+      ],
+      "totalFunciones": 2,
+      "funcionesConTrazabilidad": 1,
+      "funcionesSinTrazabilidad": [
+        {
+          "nombre": "dataService",
+          "linea": 26,
+          "tieneTrazabilidad": false,
+          "archivo": "data.service.js"
+        }
+      ]
+    }
+  ],
+  "totalFunciones": 10,
+  "funcionesConTrazabilidad": 7,
+  "funcionesSinTrazabilidad": [
+    {
+      "archivo": "map.controller.js",
+      "funcion": "MapController",
+      "linea": 24
+    },
+    {
+      "archivo": "map.controller.js",
+      "funcion": "mapController",
+      "linea": 156
+    },
+    {
+      "archivo": "data.service.js",
+      "funcion": "dataService",
+      "linea": 26
+    }
+  ],
+  "porcentaje": "70.00"
+}

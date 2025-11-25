@@ -33,16 +33,28 @@ export function showLocationInfo(feature) {
   infoPanel.classList.remove('hidden');
 }
 
+/**
+ * Muestra el indicador de carga
+ * SwR-F04: Visualización de estados de carga
+ */
 export function showLoading(msg) {
   const el = document.getElementById('loading-indicator');
   if (el) { el.textContent = msg; el.style.display = 'block'; }
 }
 
+/**
+ * Oculta el indicador de carga
+ * SwR-F04: Visualización de estados de carga
+ */
 export function hideLoading() {
   const el = document.getElementById('loading-indicator');
   if (el) el.style.display = 'none';
 }
 
+/**
+ * Muestra un mensaje de error
+ * SwR-F04: Visualización de mensajes de error
+ */
 export function showError(msg) {
   const el = document.getElementById('error-message');
   if (el) { el.textContent = msg; el.style.display = 'block'; }
