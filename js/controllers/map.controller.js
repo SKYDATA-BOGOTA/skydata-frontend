@@ -141,6 +141,12 @@ class MapController {
 }
 
 /**
+ * Exportar la clase MapController para permitir testing unitario
+ * SwR-V01: Pruebas unitarias
+ */
+export { MapController };
+
+/**
  * @constant {MapController} mapController
  * @description Instancia singleton del controlador del mapa exportada para uso global.
  * Esta instancia única garantiza que solo exista un mapa activo en la aplicación.
