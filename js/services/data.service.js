@@ -1,26 +1,40 @@
 // SwR-F07: Solicitud de Datos al Backend
-import { CONFIG } from '../config/config.js';
+// SwR-I02: Cliente HTTP Frontend
+// Trazabilidad: ISO/IEC/IEEE 29148:2018 8.4
 
+/**
+ * Servicio para obtener datos del backend
+ * Implementa SwR-F07 y SwR-I02 según SRS v1.1.0.0
+ */
 class DataService {
-  async fetchDatosAmbientales() {
-    try {
-      const url = `${CONFIG.API_BASE_URL}${CONFIG.API_DATOS_ENDPOINT}`;
-      const response = await fetch(url, { method: 'GET', mode: 'cors' });
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-      const data = await response.json();
-      if (!data || data.type !== 'FeatureCollection') {
-        throw new Error('GeoJSON inválido recibido del servidor');
-      }
-      return data;
-    } catch (error) {
-      if (error.message.includes('Failed to fetch')) {
-        throw new Error('No se pudo conectar con el servidor');
-      }
-      throw error;
+    constructor() {
+        this.apiUrl = window.API_URL || 'http://localhost:3000/api/datos';
     }
-  }
+
+    // SwR-F07: Solicitud de Datos al Backend
+    // SwR-I02: Cliente HTTP Frontend
+    // Implementa requisitos funcionales SwR-F07 y SwR-I02 según ISO/IEC/IEEE 29148:2018
+    async fetchDatosAmbientales() {
+        try {
+            const response = await fetch(this.apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Error al obtener datos:', error);
+            throw error;
+        }
+    }
 }
 
-export const dataService = new DataService();
+// Exportar instancia global
+window.dataService = new DataService();

@@ -1,44 +1,43 @@
-// SwR-F01, SwR-F07: Inicialización de la Aplicación
-// CU-01: Consultar Información Ambiental
-
-import { mapController } from './controllers/map.controller.js';
-import { dataService } from './services/data.service.js';
-import { showError, showLoading, hideLoading } from './controllers/info.controller.js';
+// SwR-F01: Renderizado de Mapa Base
+// SwR-F07: Solicitud de Datos al Backend
+// Trazabilidad: ISO/IEC/IEEE 29148:2018 8.4
 
 /**
- * Inicialización de la Aplicación SKYDATA
- * 
- * Trazabilidad:
- * - CU-01: Consultar Información Ambiental
- * - SwR-F01: Renderizado de Mapa Base
- * - SwR-F07: Solicitud de Datos al Backend
- * - ISO/IEC 12207:2017
+ * Punto de entrada principal de la aplicación
+ * Implementa SwR-F01 y SwR-F07 según SRS v1.1.0.0
  */
-async function initApp() {
-  try {
-    console.info('SKYDATA Frontend - Iniciando...');
-    
-    // Paso 1: Inicializar mapa
-    mapController.initializeMap();
-    
-    // Paso 2: Cargar datos del backend
-    showLoading('Cargando estaciones...');
-    const datos = await dataService.fetchDatosAmbientales();
-    
-    // Paso 3: Renderizar marcadores
-    mapController.renderMarkers(datos);
-    
-    hideLoading();
-    console.info('✓ Aplicación inicializada');
-  } catch (error) {
-    console.error('Error:', error);
-    hideLoading();
-    showError('Error al cargar. Verifique que el backend esté ejecutándose.');
-  }
-}
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initApp);
-} else {
-  initApp();
-}
+// SwR-F01: Renderizado de Mapa Base
+// SwR-F07: Solicitud de Datos al Backend
+// Implementa requisitos funcionales SwR-F01 y SwR-F07 según ISO/IEC/IEEE 29148:2018
+document.addEventListener('DOMContentLoaded', async () => {
+    // Inicializar mapa
+    if (window.mapController) {
+        window.mapController.initializeMap();
+    }
+
+    // Mostrar estado de carga
+    if (window.infoController) {
+        window.infoController.showLoading();
+    }
+
+    // Obtener datos del backend
+    try {
+        const data = await window.dataService.fetchDatosAmbientales();
+        
+        // Renderizar marcadores en el mapa
+        if (window.mapController && data) {
+            window.mapController.renderMarkers(data);
+        }
+
+        // Ocultar estado de carga
+        if (window.infoController) {
+            window.infoController.infoPanel.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error al inicializar aplicación:', error);
+        if (window.infoController) {
+            window.infoController.showError('No se pudieron cargar los datos ambientales');
+        }
+    }
+});
