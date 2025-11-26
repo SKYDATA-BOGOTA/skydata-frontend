@@ -10,6 +10,7 @@
     "test:coverage": "jest --coverage",
     "test:acceptance": "jest tests/acceptance/",
     "test:security": "jest tests/security/",
+    "test:performance": "jest tests/performance/",
     "lint": "eslint js/**/*.js",
     "lint:fix": "eslint js/**/*.js --fix",
     "security:audit": "npm audit",
