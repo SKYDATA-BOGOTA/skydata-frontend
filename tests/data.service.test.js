@@ -2,12 +2,13 @@
  * Tests Unitarios para DataService
  * 
  * Este archivo contiene las pruebas unitarias para verificar el correcto
- * funcionamiento del servicio de datos.
+ * funcionamiento del servicio de datos según ISO/IEC 25010:2011 8.1.2
+ * (Corrección Funcional).
  * 
- * SwR-V03: Pruebas Unitarias de Interfaz
- * 
- * NOTA: data.service.js fue movido a main. Este archivo de test está preparado
- * para cuando se reimplemente el servicio.
+ * SwR-F07, SwR-I02: Cliente HTTP y Obtención de Datos
+ * ISO/IEC 25023:2016 Sección 5.1.2 (Corrección Funcional)
+ * ISO/IEC 25020:2019 (Modelo de Medición)
+ * ISO/IEC 25040:2011 Actividad 2 - Tarea 2.2
  */
 
 // Mock de fetch global
@@ -21,6 +22,9 @@ jest.mock('../js/config/config.js', () => ({
   }
 }));
 
+// Importar después de los mocks
+import { dataService } from '../js/services/data.service.js';
+
 describe('DataService', () => {
   beforeEach(() => {
     // Limpiar mocks antes de cada test
@@ -28,9 +32,8 @@ describe('DataService', () => {
     fetch.mockClear();
   });
 
-  describe('fetchData()', () => {
-    test.skip('debe realizar petición GET a la URL correcta', async () => {
-      // Este test está preparado para cuando se implemente el servicio
+  describe('fetchDatosAmbientales()', () => {
+    test('debe realizar petición GET a la URL correcta', async () => {
       const mockData = {
         type: "FeatureCollection",
         features: []
@@ -41,29 +44,15 @@ describe('DataService', () => {
         json: async () => mockData,
       });
 
-      // const result = await dataService.fetchData();
+      await dataService.fetchDatosAmbientales();
       
-      // expect(fetch).toHaveBeenCalledWith('http://localhost:3000/api/datos');
-      // expect(result).toEqual(mockData);
+      expect(fetch).toHaveBeenCalledWith(
+        'http://localhost:3000/api/datos',
+        { method: 'GET', mode: 'cors' }
+      );
     });
 
-    test.skip('debe manejar errores de red', async () => {
-      fetch.mockRejectedValueOnce(new Error('Network error'));
-
-      // await expect(dataService.fetchData()).rejects.toThrow('Network error');
-    });
-
-    test.skip('debe manejar respuestas HTTP con error', async () => {
-      fetch.mockResolvedValueOnce({
-        ok: false,
-        status: 404,
-        statusText: 'Not Found',
-      });
-
-      // await expect(dataService.fetchData()).rejects.toThrow();
-    });
-
-    test.skip('debe parsear correctamente datos GeoJSON', async () => {
+    test('debe retornar datos GeoJSON válidos cuando la respuesta es exitosa', async () => {
       const mockGeoJsonData = {
         type: "FeatureCollection",
         features: [
@@ -87,78 +76,26 @@ describe('DataService', () => {
         json: async () => mockGeoJsonData,
       });
 
-      // const result = await dataService.fetchData();
-      // expect(result.type).toBe("FeatureCollection");
-      // expect(result.features).toHaveLength(1);
-      // expect(result.features[0].geometry.type).toBe("Point");
+      const result = await dataService.fetchDatosAmbientales();
+      
+      expect(result.type).toBe("FeatureCollection");
+      expect(result.features).toHaveLength(1);
+      expect(result.features[0].geometry.type).toBe("Point");
+      expect(result.features[0].properties.estacion).toBe("Estación Test");
     });
 
-    test.skip('debe incluir headers correctos en la petición', async () => {
+    test('debe lanzar error si la respuesta HTTP no es exitosa', async () => {
       fetch.mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ type: "FeatureCollection", features: [] }),
+        ok: false,
+        status: 404,
+        statusText: 'Not Found',
       });
 
-      // await dataService.fetchData();
-
-      // expect(fetch).toHaveBeenCalledWith(
-      //   expect.any(String),
-      //   expect.objectContaining({
-      //     headers: expect.objectContaining({
-      //       'Content-Type': 'application/json',
-      //     })
-      //   })
-      // );
-    });
-  });
-
-  describe('getData() - con caché', () => {
-    test.skip('debe cachear datos después de la primera petición', async () => {
-      const mockData = {
-        type: "FeatureCollection",
-        features: []
-      };
-
-      fetch.mockResolvedValue({
-        ok: true,
-        json: async () => mockData,
-      });
-
-      // Primera petición
-      // const result1 = await dataService.getData();
-      // Segunda petición
-      // const result2 = await dataService.getData();
-
-      // Fetch solo debería haberse llamado una vez si hay caché
-      // expect(fetch).toHaveBeenCalledTimes(1);
-      // expect(result1).toEqual(result2);
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('HTTP 404');
     });
 
-    test.skip('debe permitir forzar actualización sin usar caché', async () => {
-      const mockData1 = { type: "FeatureCollection", features: [] };
-      const mockData2 = { type: "FeatureCollection", features: [{}] };
-
-      fetch
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => mockData1,
-        })
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => mockData2,
-        });
-
-      // const result1 = await dataService.getData();
-      // const result2 = await dataService.getData(true); // force refresh
-
-      // expect(fetch).toHaveBeenCalledTimes(2);
-    });
-  });
-
-  describe('Validación de datos', () => {
-    test.skip('debe validar estructura de GeoJSON', async () => {
+    test('debe lanzar error si los datos recibidos no son GeoJSON válido', async () => {
       const invalidData = {
-        // Falta 'type' y 'features'
         data: []
       };
 
@@ -167,13 +104,13 @@ describe('DataService', () => {
         json: async () => invalidData,
       });
 
-      // await expect(dataService.fetchData()).rejects.toThrow('Invalid GeoJSON');
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('GeoJSON inválido recibido del servidor');
     });
 
-    test.skip('debe validar que features sea un array', async () => {
+    test('debe lanzar error si los datos no tienen type FeatureCollection', async () => {
       const invalidData = {
-        type: "FeatureCollection",
-        features: "not an array"
+        type: "InvalidType",
+        features: []
       };
 
       fetch.mockResolvedValueOnce({
@@ -181,104 +118,97 @@ describe('DataService', () => {
         json: async () => invalidData,
       });
 
-      // await expect(dataService.fetchData()).rejects.toThrow();
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('GeoJSON inválido recibido del servidor');
     });
-  });
 
-  describe('Manejo de errores', () => {
-    test.skip('debe proporcionar mensajes de error descriptivos', async () => {
+    test('debe manejar errores de conexión de red', async () => {
       fetch.mockRejectedValueOnce(new Error('Failed to fetch'));
 
-      // try {
-      //   await dataService.fetchData();
-      //   fail('Debería haber lanzado un error');
-      // } catch (error) {
-      //   expect(error.message).toContain('fetch');
-      // }
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('No se pudo conectar con el servidor');
     });
 
-    test.skip('debe reintentar peticiones en caso de fallo temporal', async () => {
-      // Primer intento falla, segundo intento tiene éxito
-      fetch
-        .mockRejectedValueOnce(new Error('Timeout'))
-        .mockResolvedValueOnce({
-          ok: true,
-          json: async () => ({ type: "FeatureCollection", features: [] }),
-        });
+    test('debe manejar errores de red genéricos', async () => {
+      fetch.mockRejectedValueOnce(new Error('Network error'));
 
-      // const result = await dataService.fetchDataWithRetry();
-      // expect(fetch).toHaveBeenCalledTimes(2);
-      // expect(result).toBeDefined();
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('Network error');
     });
 
-    test.skip('debe tener un timeout para peticiones largas', async () => {
-      jest.useFakeTimers();
+    test('debe manejar respuestas HTTP 500', async () => {
+      fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+      });
 
-      fetch.mockImplementationOnce(() => 
-        new Promise((resolve) => {
-          setTimeout(() => resolve({
-            ok: true,
-            json: async () => ({ type: "FeatureCollection", features: [] })
-          }), 10000);
-        })
-      );
-
-      // const promise = dataService.fetchDataWithTimeout(5000);
-      
-      jest.advanceTimersByTime(5000);
-
-      // await expect(promise).rejects.toThrow('Timeout');
-
-      jest.useRealTimers();
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('HTTP 500');
     });
-  });
 
-  describe('Transformación de datos', () => {
-    test.skip('debe transformar coordenadas si es necesario', async () => {
-      const mockData = {
+    test('debe manejar respuestas HTTP 400', async () => {
+      fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        statusText: 'Bad Request',
+      });
+
+      await expect(dataService.fetchDatosAmbientales()).rejects.toThrow('HTTP 400');
+    });
+
+    test('debe procesar FeatureCollection vacía correctamente', async () => {
+      const emptyGeoJson = {
         type: "FeatureCollection",
-        features: [
-          {
-            type: "Feature",
-            geometry: {
-              type: "Point",
-              coordinates: [-74.0721, 4.7110]
-            },
-            properties: {}
-          }
-        ]
+        features: []
       };
 
       fetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => mockData,
+        json: async () => emptyGeoJson,
       });
 
-      // const result = await dataService.fetchData();
-      // Verificar que las coordenadas están en el formato esperado
-      // expect(result.features[0].geometry.coordinates).toHaveLength(2);
+      const result = await dataService.fetchDatosAmbientales();
+      
+      expect(result.type).toBe("FeatureCollection");
+      expect(result.features).toEqual([]);
     });
 
-    test.skip('debe filtrar características inválidas', async () => {
-      const mockData = {
+    test('debe procesar múltiples features correctamente', async () => {
+      const multiFeatureGeoJson = {
         type: "FeatureCollection",
         features: [
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [-74.0721, 4.7110] },
-            properties: { estacion: "Válida" }
-          },
-          {
-            type: "Feature",
-            geometry: null, // Inválida
-            properties: {}
+            properties: { estacion: "Estación 1" }
           },
           {
             type: "Feature",
             geometry: { type: "Point", coordinates: [-74.0825, 4.6511] },
-            properties: { estacion: "Válida 2" }
+            properties: { estacion: "Estación 2" }
+          },
+          {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [-74.1125, 4.6850] },
+            properties: { estacion: "Estación 3" }
           }
         ]
+      };
+
+      fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => multiFeatureGeoJson,
+      });
+
+      const result = await dataService.fetchDatosAmbientales();
+      
+      expect(result.features).toHaveLength(3);
+      expect(result.features[0].properties.estacion).toBe("Estación 1");
+      expect(result.features[1].properties.estacion).toBe("Estación 2");
+      expect(result.features[2].properties.estacion).toBe("Estación 3");
+    });
+
+    test('debe usar modo CORS en la petición', async () => {
+      const mockData = {
+        type: "FeatureCollection",
+        features: []
       };
 
       fetch.mockResolvedValueOnce({
@@ -286,26 +216,14 @@ describe('DataService', () => {
         json: async () => mockData,
       });
 
-      // const result = await dataService.fetchData();
-      // Solo debe retornar las características válidas
-      // expect(result.features).toHaveLength(2);
+      await dataService.fetchDatosAmbientales();
+      
+      expect(fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          mode: 'cors'
+        })
+      );
     });
   });
 });
-
-/**
- * PLANTILLA PARA IMPLEMENTACIÓN FUTURA
- * 
- * Cuando se reimplemente data.service.js, descomentar los tests y ajustar
- * según la implementación real. Los tests cubren:
- * 
- * - ✅ Peticiones HTTP básicas
- * - ✅ Manejo de errores y timeouts
- * - ✅ Caché de datos
- * - ✅ Validación de GeoJSON
- * - ✅ Transformación de datos
- * - ✅ Reintentos automáticos
- * 
- * Para activar los tests, cambiar test.skip() por test()
- */
-
