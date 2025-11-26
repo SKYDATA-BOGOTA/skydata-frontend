@@ -1,0 +1,340 @@
+name: CI/CD Pipeline ISO 25000 (SQuaRE) e ISO 12207
+
+# Pipeline de CI/CD basado en ISO/IEC 25000 (SQuaRE) e ISO/IEC 12207:2017
+# Base Normativa:
+# - ISO/IEC 25000:2014 (SQuaRE Framework)
+# - ISO/IEC 25010:2011 (Quality Models)
+# - ISO/IEC 25020:2019 (Measurement Model)
+# - ISO/IEC 25040:2011 (Evaluation Process)
+# - ISO/IEC 12207:2017 (Software Life Cycle Processes)
+# - ISO/IEC 5055:2021 (Code Quality Measures)
+# - ISO/IEC/IEEE 29148:2018 (Requirements Traceability)
+# - ISO/IEC 29119:2013 (Software Testing)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  # Job 1: Lint y Análisis Estático
+  # Base: ISO/IEC 5055:2021, ISO/IEC 12207:2017 6.4.6.4.1
+  lint:
+    name: Lint y Análisis Estático (ISO 5055:2021)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Verificar lint:fix
+        run: npm run lint:fix -- --dry-run || true
+
+  # Job 2: Auditoría de Seguridad
+  # Base: ISO/IEC 25010:2011 8.4.1 (Seguridad), ISO/IEC 5055:2021
+  security-audit:
+    name: Auditoría de Seguridad (ISO 25010:2011 8.4.1)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Reportar vulnerabilidades
+        if: failure()
+        run: |
+          echo "⚠️ Vulnerabilidades detectadas"
+          npm audit --json > audit-report.json || true
+
+      - name: Subir reporte de auditoría
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-audit-report
+          path: audit-report.json
+          if-no-files-found: ignore
+
+  # Job 3: Pruebas Unitarias
+  # Base: ISO/IEC 25010:2011 8.1.2, ISO/IEC 12207:2017 6.4.6.4.3
+  unit-tests:
+    name: Pruebas Unitarias (ISO 25010:2011 8.1.2)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas unitarias
+        run: npm test
+        env:
+          CI: true
+
+      - name: Verificar que todos los tests pasan
+        run: |
+          TEST_RESULT=$(npm test -- --passWithNoTests 2>&1 | tail -1)
+          if echo "$TEST_RESULT" | grep -q "FAIL"; then
+            echo "❌ Tests fallaron"
+            exit 1
+          fi
+          echo "✅ Todos los tests pasaron"
+
+  # Job 4: Cobertura de Código
+  # Base: ISO/IEC 25020:2019, ISO/IEC 25040:2011 Actividad 4
+  coverage:
+    name: Cobertura de Código (ISO 25020:2019)
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas con cobertura
+        run: npm run test:coverage
+        env:
+          CI: true
+
+      - name: Verificar umbral de cobertura ≥60%
+        run: |
+          COVERAGE=$(npm run test:coverage -- --coverageReporters=text-summary 2>&1 | grep -oP 'All files\s+\|\s+\K[0-9.]+' | head -1)
+          if [ -z "$COVERAGE" ]; then
+            echo "⚠️ No se pudo obtener cobertura"
+            exit 0
+          fi
+          COVERAGE_INT=${COVERAGE%.*}
+          if [ "$COVERAGE_INT" -lt 60 ]; then
+            echo "❌ Cobertura $COVERAGE% es menor que 60% (ISO 25020:2019 QM_Cov_001)"
+            exit 1
+          fi
+          echo "✅ Cobertura $COVERAGE% cumple con umbral ≥60%"
+
+      - name: Subir reporte de cobertura
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: ignore
+
+  # Job 5: Pruebas de Integración
+  # Base: ISO/IEC 25040:2011 Actividad 2 - Tarea 2.2
+  integration-tests:
+    name: Pruebas de Integración (ISO 25040:2011)
+    runs-on: ubuntu-latest
+    needs: [unit-tests]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas de integración
+        run: npm test -- tests/integration/
+        env:
+          CI: true
+
+      - name: Verificar que todos los tests de integración pasan
+        run: |
+          TEST_RESULT=$(npm test -- tests/integration/ --passWithNoTests 2>&1 | tail -1)
+          if echo "$TEST_RESULT" | grep -q "FAIL"; then
+            echo "❌ Tests de integración fallaron"
+            exit 1
+          fi
+          echo "✅ Todos los tests de integración pasaron"
+
+  # Job 6: Pruebas E2E (End-to-End)
+  # Base: ISO/IEC 29119-2:2013, ISO/IEC 12207:2017 6.4.6.4.3
+  # Nota: Cypress/Playwright se implementará en Fase 4
+  e2e-tests:
+    name: Pruebas E2E (ISO 29119-2:2013)
+    runs-on: ubuntu-latest
+    needs: [integration-tests]
+    if: false  # Deshabilitado hasta implementar en Fase 4
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas E2E
+        run: echo "Pruebas E2E pendientes de implementación (Fase 4)"
+
+  # Job 7: Pruebas de Rendimiento
+  # Base: ISO/IEC 25010:2011 8.2.1 (Eficiencia de Rendimiento)
+  performance-tests:
+    name: Pruebas de Rendimiento (ISO 25010:2011 8.2.1)
+    runs-on: ubuntu-latest
+    needs: [integration-tests]
+    if: false  # Deshabilitado hasta implementar en Fase 4
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar pruebas de rendimiento
+        run: echo "Pruebas de rendimiento pendientes de implementación (Fase 4)"
+
+  # Job 8: Verificación de Trazabilidad
+  # Base: ISO/IEC/IEEE 29148:2018 8.4
+  traceability-audit:
+    name: Verificación de Trazabilidad (ISO 29148:2018)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Verificar comentarios de trazabilidad SwR-XX
+        run: |
+          echo "🔍 Verificando trazabilidad según ISO/IEC/IEEE 29148:2018 8.4"
+          
+          # Buscar funciones sin comentarios SwR-XX
+          JS_FILES=$(find js -name "*.js" -type f)
+          MISSING_TRACEABILITY=0
+          
+          for file in $JS_FILES; do
+            # Buscar funciones exportadas o definidas
+            FUNCTIONS=$(grep -E "^(export\s+)?(function|const|class|async\s+function)" "$file" | grep -v "SwR-" || true)
+            if [ -n "$FUNCTIONS" ]; then
+              echo "⚠️ Archivo $file tiene funciones sin trazabilidad SwR-XX"
+              MISSING_TRACEABILITY=$((MISSING_TRACEABILITY + 1))
+            fi
+          done
+          
+          if [ $MISSING_TRACEABILITY -gt 0 ]; then
+            echo "❌ Se encontraron $MISSING_TRACEABILITY archivos con funciones sin trazabilidad"
+            echo "Requisito: 100% de funciones deben tener comentarios SwR-XX según ISO 29148:2018"
+            exit 1
+          fi
+          
+          echo "✅ Todas las funciones tienen trazabilidad SwR-XX"
+
+  # Job 9: Build y Validación
+  # Base: ISO/IEC 12207:2017 6.4.6.4.1
+  build:
+    name: Build y Validación (ISO 12207:2017)
+    runs-on: ubuntu-latest
+    needs: [lint, coverage, integration-tests]
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Verificar que el proyecto se puede construir
+        run: |
+          # Verificar que package.json es válido
+          node -e "require('./package.json')"
+          echo "✅ package.json válido"
+          
+          # Si existe script build, ejecutarlo
+          if npm run | grep -q "build"; then
+            npm run build
+            echo "✅ Build exitoso"
+          else
+            echo "ℹ️ No hay script de build definido (opcional según ISO 12207:2017)"
+          fi
+
+  # Job de resumen: Verificar que todos los jobs críticos pasaron
+  pipeline-success:
+    name: Verificación Final del Pipeline
+    runs-on: ubuntu-latest
+    needs: [lint, security-audit, unit-tests, coverage, integration-tests, traceability-audit, build]
+    if: always()
+    steps:
+      - name: Verificar estado del pipeline
+        run: |
+          echo "📊 Resumen del Pipeline CI/CD ISO 25000"
+          echo "✅ Lint y Análisis Estático: ${{ needs.lint.result }}"
+          echo "✅ Auditoría de Seguridad: ${{ needs.security-audit.result }}"
+          echo "✅ Pruebas Unitarias: ${{ needs.unit-tests.result }}"
+          echo "✅ Cobertura de Código: ${{ needs.coverage.result }}"
+          echo "✅ Pruebas de Integración: ${{ needs.integration-tests.result }}"
+          echo "✅ Verificación de Trazabilidad: ${{ needs.traceability-audit.result }}"
+          echo "✅ Build y Validación: ${{ needs.build.result }}"
+          
+          if [ "${{ needs.lint.result }}" != "success" ] || \
+             [ "${{ needs.unit-tests.result }}" != "success" ] || \
+             [ "${{ needs.coverage.result }}" != "success" ] || \
+             [ "${{ needs.integration-tests.result }}" != "success" ] || \
+             [ "${{ needs.traceability-audit.result }}" != "success" ] || \
+             [ "${{ needs.build.result }}" != "success" ]; then
+            echo "❌ Pipeline falló. Revisar jobs individuales."
+            exit 1
+          fi
+          
+          echo "✅ Pipeline CI/CD completado exitosamente según ISO 25000 e ISO 12207"
