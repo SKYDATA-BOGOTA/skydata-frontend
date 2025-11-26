@@ -1,12 +1,14 @@
 {
   "name": "skydata-frontend",
   "version": "1.0.0",
-  "description": "Frontend Web para SKYDATA - Sistema de Visualización de Información Ambiental de Bogotá",
+  "description": "Frontend del sistema SKYDATA Bogotá",
   "scripts": {
     "dev": "live-server --port=8080",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "lint": "eslint js/**/*.js",
     "lint:fix": "eslint js/**/*.js --fix",
     "security:audit": "npm audit",
@@ -14,19 +16,20 @@
   },
   "keywords": [
     "skydata",
-    "leaflet",
-    "geojson",
-    "maps",
-    "iso-29148"
+    "bogota",
+    "environmental",
+    "data",
+    "visualization"
   ],
-  "author": "Edgar Andrade, Giancarlo Prieto",
-  "license": "ISC",
+  "author": "SKYDATA Bogotá",
+  "license": "MIT",
   "dependencies": {
     "leaflet": "^1.9.4"
   },
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
+    "@playwright/test": "^1.48.0",
     "@testing-library/jest-dom": "^6.9.1",
     "babel-jest": "^30.2.0",
     "eslint": "^8.52.0",
