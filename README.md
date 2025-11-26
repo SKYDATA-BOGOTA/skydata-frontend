@@ -1,55 +1,79 @@
-# SKYDATA Frontend - Scaffolding
+# SKYDATA Bogotá - Frontend
 
-## Estado de la Rama Main
+Sistema de visualización de información ambiental para la ciudad de Bogotá.
 
-⚠️ **Esta rama contiene SOLO el scaffolding inicial del proyecto.**
+## Descripción
 
-**El código funcional está en las branches de features.**
+Frontend del sistema SKYDATA Bogotá desarrollado según estándares ISO/IEC 25000 (SQuaRE) e ISO/IEC 12207:2017.
 
-## Estructura del Proyecto (Scaffolding)
+## Características
 
-```
-frontend/
-├── index.html               # HTML base
-├── css/
-│   ├── styles.css         # Estilos (en branches)
-│   └── map.css            # Estilos mapa (en branches)
-├── js/
-│   ├── config/            # Configuración
-│   ├── controllers/       # Controladores (en branches)
-│   ├── services/          # Servicios (en branches)
-│   └── models/            # Modelos
-├── assets/
-├── tests/
-├── .gitignore
-├── .eslintrc.json
-├── package.json
-└── README.md
-```
+- Visualización de datos ambientales en mapa interactivo
+- Integración con backend mediante API REST
+- Pruebas unitarias y de integración completas
+- Pipeline CI/CD según ISO 25000 e ISO 12207
+- Análisis de calidad con SonarCloud
 
-## Branches con Implementaciones
+## Tecnologías
 
-| Branch | Issue | Responsable | Descripción |
-|--------|-------|-------------|-------------|
-| `feature/SwR-F01-map-rendering` | #1 | @jeissonmp15 | Renderizado Mapa |
-| `feature/SwR-F02-map-markers` | #2 | @giancarloprieto | Marcadores |
-| `feature/SwR-F07-I02-http-client` | #3 | @carlosperdomo376 | Cliente HTTP |
-| `feature/SwR-F03-F04-info-display` | #4 | @eab1362 | Info Detallada |
-| `feature/SwR-V03-ui-tests` | #5 | @jeissonmp15 | Tests UI (Pendiente) |
-| `feature/SwR-U01-U02-ui-ux-styles` | #6 | @giancarloprieto | UI/UX Estilos |
+- JavaScript (ES6+)
+- Leaflet.js para mapas
+- Jest para testing
+- Playwright para pruebas E2E
 
-## Cómo Trabajar
+## Instalación
 
 ```bash
-git clone https://github.com/SKYDATA-BOGOTA/skydata-frontend.git
-cd skydata-frontend
-git checkout feature/SwR-XXX-tu-feature
 npm install
+```
+
+## Desarrollo
+
+```bash
 npm run dev
 ```
 
-## Enlaces
+## Testing
 
-- **Backend**: https://github.com/SKYDATA-BOGOTA/skydata-backend
-- **Issues**: https://github.com/SKYDATA-BOGOTA/skydata-frontend/issues
-- **Proyecto**: https://github.com/orgs/SKYDATA-BOGOTA/projects/1
+```bash
+# Tests unitarios
+npm test
+
+# Tests con cobertura
+npm run test:coverage
+
+# Tests E2E
+npm run test:e2e
+```
+
+## Calidad de Código
+
+Este proyecto utiliza:
+- **ESLint** para análisis estático
+- **SonarCloud** para análisis avanzado de calidad
+- **Jest** para pruebas y cobertura
+- **Pipeline CI/CD** según ISO 25000 e ISO 12207
+
+## Pipeline CI/CD
+
+El pipeline ejecuta automáticamente:
+- ✅ Lint y análisis estático
+- ✅ Análisis SonarCloud
+- ✅ Auditoría de seguridad
+- ✅ Pruebas unitarias
+- ✅ Cobertura de código (≥60%)
+- ✅ Pruebas de integración
+- ✅ Verificación de trazabilidad
+- ✅ Build y validación
+
+Ver `.github/workflows/ci-cd-iso-25000.yml` para más detalles.
+
+## Documentación
+
+- Pipeline CI/CD: `5. PRUEBAS/10_Pipeline_CI_CD_ISO_25000.tex`
+- SonarCloud: `README_SONARCLOUD.md`
+- Plan de Pruebas: `5. PRUEBAS/06_Plan_Implementacion_Pruebas_ISO_25000.tex`
+
+## Trazabilidad
+
+Todos los componentes del código tienen trazabilidad a requisitos mediante comentarios `SwR-XX` según ISO/IEC/IEEE 29148:2018.
