@@ -2,34 +2,32 @@
   "name": "skydata-frontend",
   "version": "1.0.0",
   "description": "Frontend del sistema SKYDATA Bogotá",
+  "main": "js/main.js",
   "scripts": {
     "dev": "live-server --port=8080",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
+    "test:acceptance": "jest tests/acceptance/",
     "lint": "eslint js/**/*.js",
     "lint:fix": "eslint js/**/*.js --fix",
     "security:audit": "npm audit",
-    "quality:check": "npm run lint && npm run security:audit && npm run test:coverage"
+    "quality:check": "npm run lint && npm run security:audit && npm run test:coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "keywords": [
     "skydata",
     "bogota",
     "environmental",
-    "data",
-    "visualization"
+    "geojson"
   ],
   "author": "SKYDATA Bogotá",
   "license": "MIT",
-  "dependencies": {
-    "leaflet": "^1.9.4"
-  },
   "devDependencies": {
     "@babel/core": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
-    "@playwright/test": "^1.48.0",
+    "@playwright/test": "^1.45.3",
     "@testing-library/jest-dom": "^6.9.1",
     "babel-jest": "^30.2.0",
     "eslint": "^8.52.0",
@@ -39,5 +37,6 @@
     "live-server": "^1.2.2",
     "msw": "^2.12.3",
     "whatwg-fetch": "^3.6.20"
-  }
+  },
+  "dependencies": {}
 }
