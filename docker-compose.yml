@@ -1,0 +1,31 @@
+# docker-compose.yml para desarrollo Frontend SKYDATA
+# Base Normativa: ISO/IEC 25010:2011 8.8.1 (Adaptability)
+
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - API_URL=http://localhost:3001
+    networks:
+      - skydata-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+networks:
+  skydata-network:
+    external: true
+
