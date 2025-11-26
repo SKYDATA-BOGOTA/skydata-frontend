@@ -16,6 +16,7 @@ on:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
+    types: [opened, synchronize, reopened]
 
 jobs:
   # Job 1: Lint y Análisis Estático
@@ -46,7 +47,39 @@ jobs:
       - name: Verificar lint:fix
         run: npm run lint:fix -- --dry-run || true
 
-  # Job 2: Auditoría de Seguridad
+  # Job 2: SonarCloud Analysis
+  # Base: ISO/IEC 5055:2021, ISO/IEC 25010:2011 8.5.1 (Mantenibilidad)
+  sonarcloud:
+    name: Análisis SonarCloud (ISO 5055:2021)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled para análisis completo
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Ejecutar tests con cobertura
+        run: npm run test:coverage
+        env:
+          CI: true
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        continue-on-error: true  # No bloquear pipeline si SonarCloud falla (puede requerir configuración inicial)
+
+  # Job 3: Auditoría de Seguridad
   # Base: ISO/IEC 25010:2011 8.4.1 (Seguridad), ISO/IEC 5055:2021
   security-audit:
     name: Auditoría de Seguridad (ISO 25010:2011 8.4.1)
@@ -82,7 +115,7 @@ jobs:
           path: audit-report.json
           if-no-files-found: ignore
 
-  # Job 3: Pruebas Unitarias
+  # Job 4: Pruebas Unitarias
   # Base: ISO/IEC 25010:2011 8.1.2, ISO/IEC 12207:2017 6.4.6.4.3
   unit-tests:
     name: Pruebas Unitarias (ISO 25010:2011 8.1.2)
@@ -117,7 +150,7 @@ jobs:
           fi
           echo "✅ Todos los tests pasaron"
 
-  # Job 4: Cobertura de Código
+  # Job 5: Cobertura de Código
   # Base: ISO/IEC 25020:2019, ISO/IEC 25040:2011 Actividad 4
   coverage:
     name: Cobertura de Código (ISO 25020:2019)
@@ -162,7 +195,7 @@ jobs:
           path: coverage/
           if-no-files-found: ignore
 
-  # Job 5: Pruebas de Integración
+  # Job 6: Pruebas de Integración
   # Base: ISO/IEC 25040:2011 Actividad 2 - Tarea 2.2
   integration-tests:
     name: Pruebas de Integración (ISO 25040:2011)
@@ -195,7 +228,7 @@ jobs:
           fi
           echo "✅ Todos los tests de integración pasaron"
 
-  # Job 6: Pruebas E2E (End-to-End)
+  # Job 7: Pruebas E2E (End-to-End)
   # Base: ISO/IEC 29119-2:2013, ISO/IEC 12207:2017 6.4.6.4.3
   # Nota: Cypress/Playwright se implementará en Fase 4
   e2e-tests:
@@ -219,7 +252,7 @@ jobs:
       - name: Ejecutar pruebas E2E
         run: echo "Pruebas E2E pendientes de implementación (Fase 4)"
 
-  # Job 7: Pruebas de Rendimiento
+  # Job 8: Pruebas de Rendimiento
   # Base: ISO/IEC 25010:2011 8.2.1 (Eficiencia de Rendimiento)
   performance-tests:
     name: Pruebas de Rendimiento (ISO 25010:2011 8.2.1)
@@ -242,7 +275,7 @@ jobs:
       - name: Ejecutar pruebas de rendimiento
         run: echo "Pruebas de rendimiento pendientes de implementación (Fase 4)"
 
-  # Job 8: Verificación de Trazabilidad
+  # Job 9: Verificación de Trazabilidad
   # Base: ISO/IEC/IEEE 29148:2018 8.4
   traceability-audit:
     name: Verificación de Trazabilidad (ISO 29148:2018)
@@ -276,7 +309,7 @@ jobs:
           
           echo "✅ Todas las funciones tienen trazabilidad SwR-XX"
 
-  # Job 9: Build y Validación
+  # Job 10: Build y Validación
   # Base: ISO/IEC 12207:2017 6.4.6.4.1
   build:
     name: Build y Validación (ISO 12207:2017)
@@ -313,13 +346,14 @@ jobs:
   pipeline-success:
     name: Verificación Final del Pipeline
     runs-on: ubuntu-latest
-    needs: [lint, security-audit, unit-tests, coverage, integration-tests, traceability-audit, build]
+    needs: [lint, sonarcloud, security-audit, unit-tests, coverage, integration-tests, traceability-audit, build]
     if: always()
     steps:
       - name: Verificar estado del pipeline
         run: |
           echo "📊 Resumen del Pipeline CI/CD ISO 25000"
           echo "✅ Lint y Análisis Estático: ${{ needs.lint.result }}"
+          echo "✅ Análisis SonarCloud: ${{ needs.sonarcloud.result }}"
           echo "✅ Auditoría de Seguridad: ${{ needs.security-audit.result }}"
           echo "✅ Pruebas Unitarias: ${{ needs.unit-tests.result }}"
           echo "✅ Cobertura de Código: ${{ needs.coverage.result }}"
