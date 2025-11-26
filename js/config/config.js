@@ -1,20 +1,11 @@
-// SKYDATA Frontend - Configuración
-// Trazabilidad:
-// - CU-04: Configurar Parámetros del Sistema
-// - SwR-DC01: Tecnologías Web Estándar
+// SwR-I02: Cliente HTTP Frontend
+// Trazabilidad: ISO/IEC/IEEE 29148:2018 8.4
 
-export const CONFIG = {
-    // API Backend
-    API_BASE_URL: 'http://localhost:3000',
-    API_DATOS_ENDPOINT: '/api/datos',
-    
-    // Mapa
-    MAP_CENTER: [4.6097, -74.0817], // Bogotá, Colombia
-    MAP_ZOOM: 11,
-    MAP_TILE_URL: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    MAP_ATTRIBUTION: '© OpenStreetMap contributors',
-    
-    // UI
-    UPDATE_INTERVAL: 30000, // 30 segundos
-    ERROR_DISPLAY_TIME: 5000 // 5 segundos
-};
+/**
+ * Configuración de la aplicación
+ * Implementa SwR-I02 según SRS v1.1.0.0
+ */
+
+// SwR-I02: Cliente HTTP Frontend
+// Implementa requisito de interfaz SwR-I02 según ISO/IEC/IEEE 29148:2018
+window.API_URL = window.API_URL || 'http://localhost:3000/api/datos';
