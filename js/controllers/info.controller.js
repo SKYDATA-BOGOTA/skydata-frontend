@@ -1,61 +1,87 @@
-// SwR-F03, SwR-F04: Info Detallada
-export function showLocationInfo(feature) {
-  const infoContent = document.getElementById('info-content');
-  const infoPanel = document.getElementById('info-panel');
-  
-  if (!feature || !feature.properties) return;
-  
-  const p = feature.properties;
-  const html = `
-    <div class="station-info">
-      <h3>${p.estacion || 'Estación'}</h3>
-      <div class="variables-grid">
-        <div class="variable-card">
-          <span>🌡️ Temperatura</span>
-          <span class="value">${p.temperatura} °C</span>
-        </div>
-        <div class="variable-card">
-          <span>💧 Humedad</span>
-          <span class="value">${p.humedad} %</span>
-        </div>
-        <div class="variable-card">
-          <span>🌫️ Calidad Aire</span>
-          <span class="value">${p.calidad_aire}</span>
-        </div>
-        <div class="variable-card">
-          <span>🔊 Ruido</span>
-          <span class="value">${p.ruido} dB</span>
-        </div>
-      </div>
-    </div>
-  `;
-  infoContent.innerHTML = html;
-  infoPanel.classList.remove('hidden');
-}
+// SwR-F03: Visualización de Información Detallada
+// SwR-F04: Formato de Presentación de Datos
+// SwR-U02: Retroalimentación Visual
+// Trazabilidad: ISO/IEC/IEEE 29148:2018 8.4
 
 /**
- * Muestra el indicador de carga
- * SwR-F04: Visualización de estados de carga
+ * Controlador para mostrar información detallada de ubicaciones
+ * Implementa SwR-F03, SwR-F04 y SwR-U02 según SRS v1.1.0.0
  */
-export function showLoading(msg) {
-  const el = document.getElementById('loading-indicator');
-  if (el) { el.textContent = msg; el.style.display = 'block'; }
+class InfoController {
+    constructor() {
+        this.infoPanel = document.getElementById('info-panel');
+    }
+
+    // SwR-F03: Visualización de Información Detallada
+    // Implementa requisito funcional SwR-F03 según ISO/IEC/IEEE 29148:2018
+    showLocationInfo(feature) {
+        if (!feature || !feature.properties) {
+            this.showError('No hay información disponible para esta ubicación');
+            return;
+        }
+
+        const props = feature.properties;
+        let html = '<h3>' + (props.nombre || 'Ubicación') + '</h3>';
+        html += '<div class="info-content">';
+
+        // SwR-F04: Formato de Presentación de Datos
+        // Implementa requisito funcional SwR-F04 según ISO/IEC/IEEE 29148:2018
+        if (props.temperatura !== undefined) {
+            html += '<p><strong>Temperatura:</strong> ' + this.formatTemperatura(props.temperatura) + '</p>';
+        }
+        if (props.humedad !== undefined) {
+            html += '<p><strong>Humedad:</strong> ' + this.formatHumedad(props.humedad) + '</p>';
+        }
+        if (props.presion !== undefined) {
+            html += '<p><strong>Presión:</strong> ' + this.formatPresion(props.presion) + '</p>';
+        }
+        if (props.fecha) {
+            html += '<p><strong>Fecha:</strong> ' + this.formatFecha(props.fecha) + '</p>';
+        }
+
+        html += '</div>';
+        this.infoPanel.innerHTML = html;
+        this.infoPanel.style.display = 'block';
+    }
+
+    // SwR-F04: Formato de Presentación de Datos
+    // Implementa requisito funcional SwR-F04 según ISO/IEC/IEEE 29148:2018
+    formatTemperatura(valor) {
+        return valor + ' °C';
+    }
+
+    // SwR-F04: Formato de Presentación de Datos
+    // Implementa requisito funcional SwR-F04 según ISO/IEC/IEEE 29148:2018
+    formatHumedad(valor) {
+        return valor + ' %';
+    }
+
+    // SwR-F04: Formato de Presentación de Datos
+    // Implementa requisito funcional SwR-F04 según ISO/IEC/IEEE 29148:2018
+    formatPresion(valor) {
+        return valor + ' hPa';
+    }
+
+    // SwR-F04: Formato de Presentación de Datos
+    // Implementa requisito funcional SwR-F04 según ISO/IEC/IEEE 29148:2018
+    formatFecha(fecha) {
+        return new Date(fecha).toLocaleString('es-CO');
+    }
+
+    // SwR-U02: Retroalimentación Visual
+    // Implementa requisito de usabilidad SwR-U02 según ISO/IEC/IEEE 29148:2018
+    showLoading() {
+        this.infoPanel.innerHTML = '<p>Cargando información...</p>';
+        this.infoPanel.style.display = 'block';
+    }
+
+    // SwR-U02: Retroalimentación Visual
+    // Implementa requisito de usabilidad SwR-U02 según ISO/IEC/IEEE 29148:2018
+    showError(mensaje) {
+        this.infoPanel.innerHTML = '<p class="error">' + (mensaje || 'Error al cargar información') + '</p>';
+        this.infoPanel.style.display = 'block';
+    }
 }
 
-/**
- * Oculta el indicador de carga
- * SwR-F04: Visualización de estados de carga
- */
-export function hideLoading() {
-  const el = document.getElementById('loading-indicator');
-  if (el) el.style.display = 'none';
-}
-
-/**
- * Muestra un mensaje de error
- * SwR-F04: Visualización de mensajes de error
- */
-export function showError(msg) {
-  const el = document.getElementById('error-message');
-  if (el) { el.textContent = msg; el.style.display = 'block'; }
-}
+// Exportar instancia global
+window.infoController = new InfoController();
