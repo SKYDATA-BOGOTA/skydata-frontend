@@ -1,79 +1,95 @@
-# SKYDATA Bogotá - Frontend
+# SKYDATA Frontend
 
-Sistema de visualización de información ambiental para la ciudad de Bogotá.
+![CI/CD Pipeline](https://github.com/SKYDATA-BOGOTA/skydata-frontend/actions/workflows/ci-cd-iso-25000.yml/badge.svg)
 
-## Descripción
+## 📋 Descripción
 
-Frontend del sistema SKYDATA Bogotá desarrollado según estándares ISO/IEC 25000 (SQuaRE) e ISO/IEC 12207:2017.
+Frontend del proyecto SKYDATA - Interfaz de visualización de datos de estaciones de monitoreo ambiental de Bogotá usando Leaflet y mapas interactivos.
 
-## Características
+## 🏗️ Tecnologías
 
-- Visualización de datos ambientales en mapa interactivo
-- Integración con backend mediante API REST
-- Pruebas unitarias y de integración completas
-- Pipeline CI/CD según ISO 25000 e ISO 12207
-- Análisis de calidad con SonarCloud
+- **JavaScript** (Vanilla)
+- **Leaflet** - Mapas interactivos
+- **HTML5/CSS3** - Estructura y estilos
+- **Jest** - Testing
+- **Playwright** - E2E Testing
 
-## Tecnologías
-
-- JavaScript (ES6+)
-- Leaflet.js para mapas
-- Jest para testing
-- Playwright para pruebas E2E
-
-## Instalación
+## 🚀 Instalación
 
 ```bash
+# Clonar repositorio
+git clone https://github.com/SKYDATA-BOGOTA/skydata-frontend.git
+cd skydata-frontend
+
+# Instalar dependencias
 npm install
-```
 
-## Desarrollo
-
-```bash
+# Ejecutar servidor de desarrollo
 npm run dev
+
+# Build para producción
+npm run build
 ```
 
-## Testing
+## 🧪 Pruebas
 
 ```bash
-# Tests unitarios
+# Pruebas unitarias
 npm test
 
-# Tests con cobertura
+# Pruebas con cobertura
 npm run test:coverage
 
-# Tests E2E
+# Pruebas de integración
+npm run test:integration
+
+# Pruebas de aceptación
+npm run test:acceptance
+
+# Pruebas de seguridad
+npm run test:security
+
+# Pruebas de rendimiento
+npm run test:performance
+
+# Pruebas E2E (Playwright)
 npm run test:e2e
 ```
 
-## Calidad de Código
+## 📊 Cobertura de Calidad ISO 25000
 
-Este proyecto utiliza:
-- **ESLint** para análisis estático
-- **SonarCloud** para análisis avanzado de calidad
-- **Jest** para pruebas y cobertura
-- **Pipeline CI/CD** según ISO 25000 e ISO 12207
+| Característica | Estado | Referencia ISO |
+|----------------|--------|----------------|
+| Adecuación Funcional | ✅ | ISO 25010:2011 8.1 |
+| Eficiencia de Rendimiento | ✅ | ISO 25010:2011 8.2 |
+| Compatibilidad | ✅ | ISO 25010:2011 8.3 |
+| Usabilidad | ✅ | ISO 25010:2011 8.4 |
+| Fiabilidad | ✅ | ISO 25010:2011 8.5 |
+| Seguridad | ✅ | ISO 25010:2011 8.6 |
+| Mantenibilidad | ✅ | ISO 25010:2011 8.7 |
+| Portabilidad | ✅ | ISO 25010:2011 8.8 |
 
-## Pipeline CI/CD
+### Calidad en Uso (ISO 25022:2016)
 
-El pipeline ejecuta automáticamente:
-- ✅ Lint y análisis estático
-- ✅ Análisis SonarCloud
-- ✅ Auditoría de seguridad
-- ✅ Pruebas unitarias
-- ✅ Cobertura de código (≥60%)
-- ✅ Pruebas de integración
-- ✅ Verificación de trazabilidad
-- ✅ Build y validación
+| Característica | Estado |
+|----------------|--------|
+| Efectividad | ✅ |
+| Eficiencia | ✅ |
+| Satisfacción | ✅ |
+| Libertad de riesgo | ✅ |
+| Cobertura de contexto | ✅ |
 
-Ver `.github/workflows/ci-cd-iso-25000.yml` para más detalles.
+## 🌐 Accesibilidad
 
-## Documentación
+- ✅ WCAG 2.1 Nivel AA
+- ✅ Diseño Responsive
+- ✅ Contraste de colores verificado
+- ✅ Navegación por teclado
 
-- Pipeline CI/CD: `5. PRUEBAS/10_Pipeline_CI_CD_ISO_25000.tex`
-- SonarCloud: `README_SONARCLOUD.md`
-- Plan de Pruebas: `5. PRUEBAS/06_Plan_Implementacion_Pruebas_ISO_25000.tex`
+## 📄 Licencia
 
-## Trazabilidad
+MIT © SKYDATA-BOGOTA
 
-Todos los componentes del código tienen trazabilidad a requisitos mediante comentarios `SwR-XX` según ISO/IEC/IEEE 29148:2018.
+---
+
+**Última actualización**: 2025-11-27
