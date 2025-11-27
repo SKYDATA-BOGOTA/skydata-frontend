@@ -14,7 +14,11 @@ module.exports = {
   testPathIgnorePatterns: [
     '/node_modules/',
     '/dist/',
-    '/e2e/'
+    '/e2e/',
+    '/tests/compatibility/',
+    '/tests/usability/',
+    '/tests/reliability/',
+    '/tests/quality-in-use/'
   ],
   moduleFileExtensions: ['js', 'json'],
   collectCoverageFrom: [
