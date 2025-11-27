@@ -7,66 +7,83 @@
  * SwR-V01: Configuración de entorno de pruebas
  */
 
-// Importar matchers adicionales de @testing-library/jest-dom
-require('@testing-library/jest-dom');
-
-// Polyfills para Node.js (necesarios para MSW y Fetch API)
+// Polyfills para Node.js
 if (typeof TextEncoder === 'undefined') {
   const { TextEncoder, TextDecoder } = require('util');
   global.TextEncoder = TextEncoder;
   global.TextDecoder = TextDecoder;
 }
 
-// Polyfill para Response y Request (necesario para MSW en Node.js)
-if (typeof Response === 'undefined') {
-  const { Response, Request, Headers } = require('whatwg-fetch');
-  global.Response = Response;
-  global.Request = Request;
-  global.Headers = Headers;
-}
-
-// Polyfill para BroadcastChannel (necesario para MSW)
-if (typeof BroadcastChannel === 'undefined') {
-  global.BroadcastChannel = class BroadcastChannel {
-    constructor() {}
-    postMessage() {}
-    close() {}
-    addEventListener() {}
-    removeEventListener() {}
-  };
-}
-
-// Configuración global para pruebas
-// Mock de Leaflet si es necesario (se puede expandir según necesidades)
-global.L = {
-  map: jest.fn(() => ({
-    setView: jest.fn(),
-    addLayer: jest.fn(),
-    removeLayer: jest.fn(),
-    on: jest.fn(),
-    off: jest.fn()
-  })),
-  tileLayer: jest.fn(() => ({
-    addTo: jest.fn()
-  })),
-  marker: jest.fn(() => ({
-    addTo: jest.fn(),
-    bindPopup: jest.fn(),
-    on: jest.fn()
-  })),
-  icon: jest.fn(),
-  latLng: jest.fn()
+// Mock de Headers, Request, Response para fetch
+global.Headers = class Headers {
+  constructor(init = {}) {
+    this._headers = {};
+    if (init) {
+      Object.entries(init).forEach(([key, value]) => {
+        this._headers[key.toLowerCase()] = value;
+      });
+    }
+  }
+  get(name) {
+    return this._headers[name.toLowerCase()] || null;
+  }
+  set(name, value) {
+    this._headers[name.toLowerCase()] = value;
+  }
 };
 
-// Polyfills para Node.js (necesarios para MSW)
-if (typeof TextEncoder === 'undefined') {
-  const { TextEncoder, TextDecoder } = require('util');
-  global.TextEncoder = TextEncoder;
-  global.TextDecoder = TextDecoder;
-}
+// Mock de Leaflet
+global.L = {
+  map: jest.fn(() => ({
+    setView: jest.fn().mockReturnThis(),
+    addLayer: jest.fn().mockReturnThis(),
+    removeLayer: jest.fn().mockReturnThis(),
+    on: jest.fn().mockReturnThis(),
+    off: jest.fn().mockReturnThis(),
+    getZoom: jest.fn().mockReturnValue(12),
+    getCenter: jest.fn().mockReturnValue({ lat: 4.6097, lng: -74.0817 })
+  })),
+  tileLayer: jest.fn(() => ({
+    addTo: jest.fn().mockReturnThis()
+  })),
+  marker: jest.fn(() => ({
+    addTo: jest.fn().mockReturnThis(),
+    bindPopup: jest.fn().mockReturnThis(),
+    on: jest.fn().mockReturnThis(),
+    setLatLng: jest.fn().mockReturnThis()
+  })),
+  icon: jest.fn(() => ({})),
+  latLng: jest.fn((lat, lng) => ({ lat, lng })),
+  geoJSON: jest.fn(() => ({
+    addTo: jest.fn().mockReturnThis(),
+    clearLayers: jest.fn().mockReturnThis()
+  })),
+  circleMarker: jest.fn(() => ({
+    addTo: jest.fn().mockReturnThis(),
+    bindPopup: jest.fn().mockReturnThis()
+  }))
+};
+
+// Mock de fetch
+global.fetch = jest.fn();
 
 // Limpiar mocks después de cada test
 afterEach(() => {
   jest.clearAllMocks();
+  if (global.fetch) {
+    global.fetch.mockReset();
+  }
 });
 
+// Silenciar console.error en tests (opcional)
+const originalError = console.error;
+beforeAll(() => {
+  console.error = (...args) => {
+    if (args[0]?.includes?.('Warning:')) return;
+    originalError.call(console, ...args);
+  };
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
