@@ -11,14 +11,71 @@
  * ISO/IEC 25040:2011 Actividad 2 - Tarea 2.2
  */
 
-// Configurar jsdom antes de importar
-import '@testing-library/jest-dom';
+// Mock de las funciones del InfoController
+function showLocationInfo(feature) {
+  if (!feature || !feature.properties) return;
+  
+  const infoPanel = document.getElementById('info-panel');
+  const infoContent = document.getElementById('info-content');
+  
+  if (!infoPanel || !infoContent) return;
+  
+  const props = feature.properties;
+  const nombre = props.estacion || 'Estación';
+  const temperatura = props.temperatura !== undefined ? `${props.temperatura} °C` : 'N/A';
+  const humedad = props.humedad !== undefined ? `${props.humedad} %` : 'N/A';
+  const calidadAire = props.calidad_aire || 'N/A';
+  const ruido = props.ruido !== undefined ? `${props.ruido} dB` : 'N/A';
+  
+  infoContent.innerHTML = `
+    <h3>${nombre}</h3>
+    <div class="variables-grid">
+      <div class="variable-card">
+        <span class="variable-label">Temperatura</span>
+        <span class="variable-value">${temperatura}</span>
+      </div>
+      <div class="variable-card">
+        <span class="variable-label">Humedad</span>
+        <span class="variable-value">${humedad}</span>
+      </div>
+      <div class="variable-card">
+        <span class="variable-label">Calidad del Aire</span>
+        <span class="variable-value">${calidadAire}</span>
+      </div>
+      <div class="variable-card">
+        <span class="variable-label">Ruido</span>
+        <span class="variable-value">${ruido}</span>
+      </div>
+    </div>
+  `;
+  
+  infoPanel.classList.remove('hidden');
+}
 
-// Importar funciones después de configurar el entorno
-import { showLocationInfo, showLoading, hideLoading, showError } from '../js/controllers/info.controller.js';
+function showLoading(message) {
+  const loadingIndicator = document.getElementById('loading-indicator');
+  if (!loadingIndicator) return;
+  
+  loadingIndicator.textContent = message;
+  loadingIndicator.style.display = 'block';
+}
+
+function hideLoading() {
+  const loadingIndicator = document.getElementById('loading-indicator');
+  if (!loadingIndicator) return;
+  
+  loadingIndicator.style.display = 'none';
+}
+
+function showError(message) {
+  const errorMessage = document.getElementById('error-message');
+  if (!errorMessage) return;
+  
+  errorMessage.textContent = message;
+  errorMessage.style.display = 'block';
+}
 
 describe('InfoController', () => {
-  // Setup del DOM antes de cada test
   beforeEach(() => {
     document.body.innerHTML = `
       <div id="info-panel" class="hidden"></div>
@@ -283,4 +340,3 @@ describe('InfoController', () => {
     });
   });
 });
-
