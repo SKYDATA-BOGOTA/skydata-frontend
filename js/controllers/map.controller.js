@@ -39,7 +39,16 @@ class MapController {
                 
                 // Agregar popup con información básica
                 if (feature.properties) {
-                    marker.bindPopup(`<b>${feature.properties.nombre || 'Ubicación'}</b>`);
+                    const nombreEstacion = feature.properties.estacion || feature.properties.nombre || 'Ubicación';
+                    marker.bindPopup(`<b>${nombreEstacion}</b>`);
+                    
+                    // Agregar tooltip permanente con el nombre de la estación
+                    marker.bindTooltip(nombreEstacion, {
+                        permanent: true,
+                        direction: 'top',
+                        offset: [0, -35], // Ajustar posición sobre el icono
+                        className: 'station-tooltip' // Clase CSS para estilos personalizados
+                    });
                 }
                 
                 // Agregar evento de clic

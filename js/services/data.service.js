@@ -8,7 +8,7 @@
  */
 class DataService {
     constructor() {
-        this.apiUrl = window.API_URL || 'http://localhost:3000/api/datos';
+        this.apiBaseUrl = window.API_URL || 'http://localhost:3000/api';
     }
 
     // SwR-F07: Solicitud de Datos al Backend
@@ -16,7 +16,7 @@ class DataService {
     // Implementa requisitos funcionales SwR-F07 y SwR-I02 según ISO/IEC/IEEE 29148:2018
     async fetchDatosAmbientales() {
         try {
-            const response = await fetch(this.apiUrl, {
+            const response = await fetch(`${this.apiBaseUrl}/datos`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json'

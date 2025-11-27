@@ -4,8 +4,8 @@
   "description": "Frontend del proyecto SKYDATA - Interfaz de visualización de datos de estaciones de monitoreo ambiental de Bogotá",
   "main": "src/index.js",
   "scripts": {
-    "start": "http-server public -p 8080",
-    "dev": "http-server public -p 8080 -c-1",
+    "start": "http-server -p 8080",
+    "dev": "http-server -p 8080 -c-1",
     "build": "echo 'Build completed'",
     "test": "jest",
     "test:watch": "jest --watch",

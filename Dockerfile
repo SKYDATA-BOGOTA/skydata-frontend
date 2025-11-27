@@ -1,7 +1,7 @@
 # Dockerfile para Frontend SKYDATA
-# Base Normativa: ISO/IEC 25010:2011 8.8.1 (Adaptability), 8.8.2 (Installability)
+# Base Normativa: ISO/IEC 25010:2011 8.8.1 (Adaptability)
 
-FROM node:18-alpine AS builder
+FROM node:18-alpine
 
 # Establecer directorio de trabajo
 WORKDIR /app
@@ -10,30 +10,13 @@ WORKDIR /app
 COPY package*.json ./
 
 # Instalar dependencias
-RUN npm ci
+RUN npm install
 
 # Copiar código fuente
 COPY . .
 
-# Construir aplicación
-RUN npm run build
-
-# Etapa de producción
-FROM nginx:alpine
-
-# Copiar archivos construidos
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-# Copiar configuración de Nginx
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
 # Exponer puerto
-EXPOSE 80
+EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD wget --quiet --tries=1 --spider http://localhost/ || exit 1
-
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
-
+# Comando para iniciar (usamos el script dev que ya configuramos con http-server)
+CMD ["npm", "run", "dev"]

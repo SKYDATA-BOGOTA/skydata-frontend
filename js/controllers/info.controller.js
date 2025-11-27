@@ -21,27 +21,62 @@ class InfoController {
         }
 
         const props = feature.properties;
-        let html = '<h3>' + (props.nombre || 'Ubicación') + '</h3>';
+        const nombre = props.estacion || props.nombre || 'Ubicación';
+        const localidad = props.localidad || 'Bogotá';
+        const timestamp = props.timestamp || props.fecha;
+
+        let html = `<div class="info-header">
+            <h3>${nombre}</h3>
+            <span class="badge-localidad">${localidad}</span>
+        </div>`;
+        
         html += '<div class="info-content">';
+        html += '<div class="variables-grid">';
 
         // SwR-F04: Formato de Presentación de Datos
         // Implementa requisito funcional SwR-F04 según ISO/IEC/IEEE 29148:2018
+        
         if (props.temperatura !== undefined) {
-            html += '<p><strong>Temperatura:</strong> ' + this.formatTemperatura(props.temperatura) + '</p>';
+            html += this.createVariableCard('Temperatura', this.formatTemperatura(props.temperatura), '🌡️');
         }
         if (props.humedad !== undefined) {
-            html += '<p><strong>Humedad:</strong> ' + this.formatHumedad(props.humedad) + '</p>';
+            html += this.createVariableCard('Humedad', this.formatHumedad(props.humedad), '💧');
+        }
+        if (props.calidad_aire !== undefined) {
+            html += this.createVariableCard('Calidad Aire', props.calidad_aire + ' ICA', '🍃');
+        }
+        if (props.ruido !== undefined) {
+            html += this.createVariableCard('Ruido', props.ruido + ' dB', '🔊');
         }
         if (props.presion !== undefined) {
-            html += '<p><strong>Presión:</strong> ' + this.formatPresion(props.presion) + '</p>';
+            html += this.createVariableCard('Presión', this.formatPresion(props.presion), '⏲️');
         }
-        if (props.fecha) {
-            html += '<p><strong>Fecha:</strong> ' + this.formatFecha(props.fecha) + '</p>';
+        
+        html += '</div>'; // Cierre grid
+
+        if (timestamp) {
+            html += `<div class="timestamp-info">
+                <p><strong>Última actualización:</strong> ${this.formatFecha(timestamp)}</p>
+            </div>`;
         }
 
-        html += '</div>';
+        html += '</div>'; // Cierre content
+        
         this.infoPanel.innerHTML = html;
-        this.infoPanel.style.display = 'block';
+        this.infoPanel.style.display = '';
+        this.infoPanel.classList.remove('hidden');
+    }
+
+    createVariableCard(label, value, icon) {
+        return `
+            <div class="variable-card">
+                <div class="variable-icon">${icon}</div>
+                <div class="variable-data">
+                    <span class="variable-label">${label}</span>
+                    <span class="variable-value">${value}</span>
+                </div>
+            </div>
+        `;
     }
 
     // SwR-F04: Formato de Presentación de Datos
@@ -72,14 +107,16 @@ class InfoController {
     // Implementa requisito de usabilidad SwR-U02 según ISO/IEC/IEEE 29148:2018
     showLoading() {
         this.infoPanel.innerHTML = '<p>Cargando información...</p>';
-        this.infoPanel.style.display = 'block';
+        this.infoPanel.style.display = '';
+        this.infoPanel.classList.remove('hidden');
     }
 
     // SwR-U02: Retroalimentación Visual
     // Implementa requisito de usabilidad SwR-U02 según ISO/IEC/IEEE 29148:2018
     showError(mensaje) {
         this.infoPanel.innerHTML = '<p class="error">' + (mensaje || 'Error al cargar información') + '</p>';
-        this.infoPanel.style.display = 'block';
+        this.infoPanel.style.display = '';
+        this.infoPanel.classList.remove('hidden');
     }
 }
 
