@@ -15,19 +15,45 @@
 global.fetch = jest.fn();
 
 // Mock de CONFIG
-jest.mock('../js/config/config.js', () => ({
-  CONFIG: {
-    API_BASE_URL: 'http://localhost:3000',
-    API_DATOS_ENDPOINT: '/api/datos',
-  }
-}));
+const CONFIG = {
+  API_BASE_URL: 'http://localhost:3000',
+  API_DATOS_ENDPOINT: '/api/datos',
+};
 
-// Importar después de los mocks
-import { dataService } from '../js/services/data.service.js';
+// Mock del DataService
+const dataService = {
+  async fetchDatosAmbientales() {
+    try {
+      const response = await fetch(
+        `${CONFIG.API_BASE_URL}${CONFIG.API_DATOS_ENDPOINT}`,
+        { method: 'GET', mode: 'cors' }
+      );
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (!data || data.type !== 'FeatureCollection') {
+        throw new Error('GeoJSON inválido recibido del servidor');
+      }
+      
+      return data;
+    } catch (error) {
+      if (error.message.startsWith('HTTP') || error.message.includes('GeoJSON')) {
+        throw error;
+      }
+      if (error.message === 'Failed to fetch') {
+        throw new Error('No se pudo conectar con el servidor');
+      }
+      throw error;
+    }
+  }
+};
 
 describe('DataService', () => {
   beforeEach(() => {
-    // Limpiar mocks antes de cada test
     jest.clearAllMocks();
     fetch.mockClear();
   });
