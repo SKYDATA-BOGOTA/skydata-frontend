@@ -55,7 +55,6 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - run: npm test -- --passWithNoTests || echo "✅ Tests completed"
-      - run: echo "✅ Unit tests completed"
 
   integration-tests:
     name: Integration Tests
@@ -128,7 +127,7 @@ jobs:
           args: >
             -Dsonar.projectKey=SKYDATA-BOGOTA_skydata-frontend
             -Dsonar.organization=skydata-bogota
-            -Dsonar.sources=js,public/js,src
+            -Dsonar.sources=js
             -Dsonar.tests=tests
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.exclusions=**/node_modules/**,**/coverage/**,**/*.test.js
@@ -157,14 +156,11 @@ jobs:
     needs: [lint, unit-tests]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-      - run: npm install
       - run: |
           echo "🔍 Validating project structure..."
-          [ -d "public" ] && echo "✅ public directory"
-          [ -f "public/index.html" ] && echo "✅ index.html exists"
+          [ -d "js" ] && echo "✅ js directory exists"
+          [ -f "index.html" ] && echo "✅ index.html exists"
+          [ -d "css" ] && echo "✅ css directory exists"
 
   iso-compliance:
     name: ISO 25000 Compliance
