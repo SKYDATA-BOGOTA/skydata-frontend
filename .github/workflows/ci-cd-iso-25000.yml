@@ -65,7 +65,9 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Run Unit Tests
-        run: npm test -- --passWithNoTests
+        run: |
+          echo "🧪 Running unit tests (tests/*.test.js only)..."
+          npm test -- --testPathPattern="tests/[^/]+\.test\.js$" --passWithNoTests
       - run: echo "✅ Unit tests completed"
 
   integration-tests:
@@ -79,7 +81,9 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Run Integration Tests
-        run: npm test -- --testPathPattern="tests/integration" --passWithNoTests --coverage=false
+        run: |
+          echo "🔗 Running integration tests (tests/integration/)..."
+          npm test -- --testPathPattern="tests/integration" --passWithNoTests --coverage=false
       - run: echo "✅ Integration tests completed"
 
   acceptance-tests:
@@ -93,7 +97,9 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Run Acceptance Tests
-        run: npm test -- --testPathPattern="tests/acceptance" --passWithNoTests --coverage=false
+        run: |
+          echo "✅ Running acceptance tests (tests/acceptance/)..."
+          npm test -- --testPathPattern="tests/acceptance" --passWithNoTests --coverage=false
       - run: echo "✅ Acceptance tests completed"
 
   security-tests:
@@ -107,7 +113,9 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Run Security Tests
-        run: npm test -- --testPathPattern="tests/security" --passWithNoTests --coverage=false
+        run: |
+          echo "🔒 Running security tests (tests/security/)..."
+          npm test -- --testPathPattern="tests/security" --passWithNoTests --coverage=false
       - run: echo "✅ Security tests completed"
 
   performance-tests:
@@ -121,7 +129,9 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Run Performance Tests
-        run: npm test -- --testPathPattern="tests/performance" --passWithNoTests --coverage=false
+        run: |
+          echo "⚡ Running performance tests (tests/performance/)..."
+          npm test -- --testPathPattern="tests/performance" --passWithNoTests --coverage=false
       - run: echo "✅ Performance tests completed"
 
   sonarcloud:
@@ -138,7 +148,7 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Run tests with coverage
-        run: npm test -- --coverage --passWithNoTests || true
+        run: npm test -- --testPathPattern="tests/[^/]+\.test\.js$" --coverage --passWithNoTests || true
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
@@ -165,7 +175,9 @@ jobs:
           node-version: '20.x'
       - run: npm install
       - name: Generate Coverage Report
-        run: npm test -- --coverage --passWithNoTests
+        run: |
+          echo "📊 Generating coverage report for unit tests..."
+          npm test -- --testPathPattern="tests/[^/]+\.test\.js$" --coverage --passWithNoTests
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -197,6 +209,13 @@ jobs:
           echo "=========================================="
           echo "✅ CI/CD Pipeline ISO 25000 - PASSED"
           echo "=========================================="
+          echo ""
+          echo "📝 Tests Ejecutados:"
+          echo "  - Unit Tests: tests/*.test.js"
+          echo "  - Integration Tests: tests/integration/"
+          echo "  - Acceptance Tests: tests/acceptance/"
+          echo "  - Security Tests: tests/security/"
+          echo "  - Performance Tests: tests/performance/"
           echo ""
           echo "📝 Base Normativa:"
           echo "  - ISO/IEC 25000:2014 (SQuaRE)"
